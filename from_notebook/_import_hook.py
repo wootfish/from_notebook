@@ -60,6 +60,8 @@ class NotebookLoader(importlib.abc.Loader):
             node for node in ast_module.body
             if isinstance(node, ast.ClassDef)
             or isinstance(node, ast.FunctionDef)
+            or isinstance(node, ast.Import)
+            or isinstance(node, ast.ImportFrom)
             or (isinstance(node, ast.Assign)
                 and isinstance(node.targets[0], ast.Name)
                 and SNAKE_CASE_REGEX.match(node.targets[0].id))
