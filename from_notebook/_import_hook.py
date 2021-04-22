@@ -10,7 +10,7 @@ from os.path import isfile
 # https://dev.to/dangerontheranger/dependency-injection-with-import-hooks-in-python-3-5hap
 
 
-SNAKE_CONST_REGEX = re.compile("^{A-Z0-9_}+$")
+SNAKE_CASE_REGEX = re.compile("^{A-Z0-9_}+$")
 
 
 class NotebookFinder(importlib.abc.MetaPathFinder):
@@ -27,26 +27,13 @@ class NotebookFinder(importlib.abc.MetaPathFinder):
 
 class NotebookLoader(importlib.abc.Loader):
     def create_module(self, spec):
-        class NotebookModule:
-            # you probably think the following line is ugly. you are correct.
-            # however making it pretty would involve breaking out intermediate
-            # values as local variables, polluting the closure namespace that
-            # `NotebookModule` is defined in, which I would prefer not to do.
-
-            # It might seem sufficient to just `del` these names after the
-            # exec() call, but that would cause problems if any of the names
-            # end up getting shadowed. It is best, I think, to keep all these
-            # values anonymous.
-
-            exec(compile(self._trim_ast_module(
-                            self._get_nb_ast(
-                                spec.name.split(".", 1)[1] + ".ipynb")),
-                         filename="<ast>", mode="exec"))
-
-        return NotebookModule()
+        return types.ModuleType(spec.name)
 
     def exec_module(self, module):
-        pass  # nothing to do, since our module is ready as soon as it's created
+        filename = module.__name__.split(".", 1)[1] + ".ipynb"
+        nb_ast = self._get_nb_ast(filename)
+        compiled = compile(self._trim_ast_module(nb_ast), "<ast>", "exec")
+        exec(compiled, module.__dict__)  # run our notebook code in the new module's namespace
 
     @staticmethod
     def _get_nb_ast(fname):
@@ -75,7 +62,7 @@ class NotebookLoader(importlib.abc.Loader):
             or isinstance(node, ast.FunctionDef)
             or (isinstance(node, ast.Assign)
                 and isinstance(node.targets[0], ast.Name)
-                and SNAKE_CONST_REGEX.match(node.targets[0].id))
+                and SNAKE_CASE_REGEX.match(node.targets[0].id))
             ], type_ignores=[])
 
 
