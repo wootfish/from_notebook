@@ -18,7 +18,6 @@ class NotebookFinder(importlib.abc.MetaPathFinder):
         if fullname.startswith("from_notebook."):
             parts = fullname.split(".", 1)
             if isfile(parts[1]+".ipynb"):
-                print("whoa we might have a live one")
                 return self._gen_spec(fullname)
 
     def _gen_spec(self, fullname):
@@ -28,8 +27,6 @@ class NotebookFinder(importlib.abc.MetaPathFinder):
 
 class NotebookLoader(importlib.abc.Loader):
     def create_module(self, spec):
-        print("create_module:", spec)
-
         class NotebookModule:
             # you probably think the following line is ugly. you are correct.
             # however making it pretty would involve breaking out intermediate
@@ -45,9 +42,6 @@ class NotebookLoader(importlib.abc.Loader):
                             self._get_nb_ast(
                                 spec.name.split(".", 1)[1] + ".ipynb")),
                          filename="<ast>", mode="exec"))
-
-        print("made a notebook module class!")
-        print("dir:", dir(NotebookModule()))
 
         return NotebookModule()
 
