@@ -25,21 +25,20 @@ All our interesting logic is in `exec_module`. This method does the following:
 
 * Reconstructs the notebook's name based on the module name
 * Opens this notebook (which is just a big blob of JSON) and deserializes it
-* Concatenates all the notebook's code cells in order to make one big string of Python code
-* Parses this code string to get an `ast.Module` object representing the notebook's full abstract syntax tree
-  * Note that this does *not* yet execute any notebook code
+* Concatenates all the notebook's code cells into one big string of Python code
+* Parses this code to get an `ast.Module` object representing the notebook's full abstract syntax tree
+  * Note that this does not involve executing any notebook code
 * Filters this `ast.Module`'s body to remove everything except:
   * `import` and `from ... import ...` statements
   * `class` and `def` statements
   * `SNAKE_CAPS = ...` assignments for all-caps variable names (assumed to be constants with low-cost evaluation)
-    * The regex for these is just `^{A-Z0-9_}+$`
+    * We already know, if AST parsing succeeded, that these names are valid, so we can match them with a simple regex: `^{A-Z0-9_}+$`
 * Loads this filtered body into a new `ast.Module` object and compiles it
 * Executes this compiled code in our new module's namespace
 
 And that's all it takes! Our module now provides every class, function, and
 snake-caps constant from the given notebook. As long as all these definitions
-are cheap and free of side effects (as they should be in any well-written
-notebook), we're good to go!
+are cheap and free of side effects (as they should be), we're good to go!
 
 ## Misc Notes
 
@@ -47,6 +46,8 @@ notebook), we're good to go!
   `from_notebook.__init__.py`. So if you have a notebook named `_install.ipynb`
   or `_import_hook.ipynb`, I'm guessing you're out of luck. But frankly, if
   your notebooks have names like those, you probably have bigger problems.
+  
+* Relatedly, you can't import any notebook whose name isn't a valid Python name. So notebooks with spaces in their names are out, for instance. We could add name mangling to support this, but that would open the possibility of name collisions, so I see it as being more trouble than it's worth. Just use underscores instead of spaces or dashes in your filenames tbh.
 
 * There aren't any config options yet. This is a scratch-your-own-itch project
   and I don't need any config. That said, these would be easy to add; if you
