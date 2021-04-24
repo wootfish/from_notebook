@@ -6,9 +6,6 @@ import sys
 import types
 from os.path import isfile
 
-# big thanks to Kermit Alexander II for this blog post about import hooks:
-# https://dev.to/dangerontheranger/dependency-injection-with-import-hooks-in-python-3-5hap
-
 
 SNAKE_CASE_REGEX = re.compile("^{A-Z0-9_}+$")
 
