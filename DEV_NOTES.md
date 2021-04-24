@@ -23,7 +23,7 @@ about how these are used [here](https://docs.python.org/3/reference/import.html#
 `create_module` is pretty much a stub method that shadows the default behavior.
 All our interesting logic is in `exec_module`. This method does the following:
 
-* Recreates the notebook's name based on the module name
+* Reconstructs the notebook's name based on the module name
 * Opens this notebook (which is just a big blob of JSON) and deserializes it
 * Concatenates all the notebook's code cells in order to make one big string of Python code
 * Parses this code string to get an `ast.Module` object representing the notebook's full abstract syntax tree
