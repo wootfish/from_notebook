@@ -42,7 +42,7 @@ are cheap and free of side effects (as they should be), we're good to go!
 
 ## Misc Notes
 
-* You probably can't use notebook whose names are shadowed by names defined in
+* You probably can't use notebooks whose names are shadowed by names defined in
   `from_notebook.__init__.py`. So if you have a notebook named `_install.ipynb`
   or `_import_hook.ipynb`, I'm guessing you're out of luck. But frankly, if
   your notebooks have names like those, you probably have bigger problems.
