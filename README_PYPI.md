@@ -2,7 +2,7 @@ Small Python utility for importing functions, classes, and constants from .ipynb
 
 Notebooks can be imported from other notebooks or from normal Python scripts. The target notebook is assumed to be located in the current working directory.
 
-You simply import the notebook as if it was a submodule of ``from_notebook``. So to import definitions from ``example.ipynb``, any of the following will work:
+You just import the notebook as if it was a submodule of ``from_notebook``. So to import definitions from ``example.ipynb``, any of the following will work:
 
 ``import from_notebook.example``
 
