@@ -1,6 +1,8 @@
 # from_notebook
 
-Small Python utility for importing functions, classes, and constants from .ipynb files. A few other packages offer to provide similar functionality; I wrote this because none of them worked on the first try for me.
+Available on pypi! `pip install from-notebook`
+
+Small Python utility for importing functions, classes, and constants from .ipynb files. A few other packages claim similar functionality; I wrote this because none of them worked on the first try for me.
 
 Notebooks can be imported from other notebooks or from normal Python scripts. The target notebook is assumed to be located in the current working directory.
 
